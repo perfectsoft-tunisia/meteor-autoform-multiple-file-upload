@@ -1,0 +1,41 @@
+<template name="afMultipleFileUpload">
+    <div id="uploadFile">
+        <div class="uploadButton">
+            {{#if currentUpload}}
+                <div class="ui progress success" data-value="1" data-total="100" id="loading" style = "margin-top:20px">
+                    <div class="bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="label">Uploading Files</div>
+                </div>
+            {{/if}}
+            {{#if errorUpload}}
+                <div class="ui negative message">
+                    <div class="header">
+                        {{errorUpload}}
+                    </div>
+                </div> 
+            {{/if}}
+            {{#if existImage}}
+                <div class="ui centered image">
+                    <div class="ui small images">
+                        {{#each existImage}}
+                        <svg width="150px" height="150px">
+                            <image xlink:href="{{this}}" x="0" y="0" width="150px" height="150px"></image>
+                        </svg>    
+                        {{/each}}     
+                    </div> 
+                </div> 
+            {{else}}   
+                <p class="ui positive message">
+                    Upload photo
+                </p> 
+            {{/if}}    
+        </div>
+    </div>
+    <select multiple data-schema-key={{schemaKey}} style="visibility:hidden; height: 0px;">
+        {{#each existImage}}
+            <option selected="selected" value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+</template>
