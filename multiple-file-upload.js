@@ -47,25 +47,30 @@ Template.afMultipleFileUpload.onRendered(function() {
             return 'https://fakeurl.com'
         }, 
         addedfile: (file) => {
-            upload_files([file], {
-                authorizer: Meteor.call.bind(this, 'authorize_upload'),
-                upload_event: (err, res) => {
-                    this.currentUpload.set(true);
-                    if (err) {
-                        this.errorUpload.set(err.reason);
-                    }
-                    $('#loading').progress({
-                        percent: res.total_percent_uploaded
-                    });
-                    if (res.status == 'complete') {
-                        listFiles.push(res.secure_url);
-                        this.linkImage.set(listFiles);
-                        this.currentUpload.set(false);
-                    }
-                },
-                encoding: 'base64',
-            });
-
+            let type = file.type.split('/')[0];
+            if (type == 'image') {
+                this.errorUpload.set(false);
+                upload_files([file], {
+                    authorizer: Meteor.call.bind(this, 'authorize_upload'),
+                    upload_event: (err, res) => {
+                        this.currentUpload.set(true);
+                        if (err) {
+                            this.errorUpload.set(err.reason);
+                        }
+                        $('#loading').progress({
+                            percent: res.total_percent_uploaded
+                        });
+                        if (res.status == 'complete') {
+                            listFiles.push(res.secure_url);
+                            this.linkImage.set(listFiles);
+                            this.currentUpload.set(false);
+                        }
+                    },
+                    encoding: 'base64',
+                });
+            } else {
+                this.errorUpload.set(`Type of file (${file.name}) is not an image`);
+            }
         },
     })
 });
