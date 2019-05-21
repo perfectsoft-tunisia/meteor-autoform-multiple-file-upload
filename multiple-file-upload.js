@@ -38,6 +38,7 @@ Template.afMultipleFileUpload.helpers({
 });
 
 Template.afMultipleFileUpload.onRendered(function() {
+    let typeName = this.data.atts ? (this.data.atts.typeName || 'image') : 'image'; 
     this.dropzone = new Dropzone('#uploadFile', {
         autoDiscover: false,
         autoProcessQueue: false,
@@ -48,7 +49,7 @@ Template.afMultipleFileUpload.onRendered(function() {
         }, 
         addedfile: (file) => {
             let type = file.type.split('/')[0];
-            if (type == 'image') {
+            if (type == typeName) {
                 this.errorUpload.set(false);
                 upload_files([file], {
                     authorizer: Meteor.call.bind(this, 'authorize_upload'),
@@ -69,7 +70,7 @@ Template.afMultipleFileUpload.onRendered(function() {
                     encoding: 'base64',
                 });
             } else {
-                this.errorUpload.set(`Type of file (${file.name}) is not an image`);
+                this.errorUpload.set(`Type of file (${file.name}) is not an ${typeName}`);
             }
         },
     })
